@@ -1,0 +1,51 @@
+﻿@model DataTable
+@using System.Data
+<main id="main" class="main">
+    <h4 class="text-center">Order Detail Table</h4>
+    <div class="px-2 d-flex flex-column gap-2">
+        <a asp-controller="OrderDetail" asp-action="DataToExcel">
+            <button type="button" class="btn btn-success btn-end"><i class="bi bi-file-earmark-excel"></i> Export to Excel</button>
+        </a>
+        <a asp-controller="OrderDetail" asp-action="OrderDetailForm">
+            <button type="button" class="btn btn-primary btn-end"><i class="bi bi-plus-lg"></i> Add Data</button>
+        </a>
+    </div>
+    <span class="text-danger">@TempData["ErrorMessage"]</span>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Order Detail ID</th>
+                <th scope="col">ProductName</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Total Amount</th>
+                <th scope="col">UserName</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow od in Model.Rows)
+            {
+                <tr>
+                    <td>@od["OrderDetailID"]</td>
+                    <td>@od["ProductName"]</td>
+                    <td>@od["Quantity"]</td>
+                    <td>@od["Amount"]</td>
+                    <td>@od["TotalAmount"]</td>
+                    <td>@od["UserName"]</td>
+                    <td style="display:flex; flex-direction:row; gap:.5rem">
+                        <a class="btn btn-outline-success btn-xs" asp-controller="OrderDetail" asp-action="OrderDetailForm" asp-route-OrderDetailID="@od["OrderDetailID"]">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <form method="post" asp-controller="OrderDetail" asp-action="OrderDetailDelete">
+                            <input type="hidden" name="OrderDetailID" value="@od["OrderDetailID"]" />
+                            <button type="submit" class="btn btn-outline-danger btn-xs" onclick="return confirm('Are you sure you want to delete this User?');">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</main>

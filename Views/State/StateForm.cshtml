@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "StateForm"; Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model Product_Management_System.Models.StateModel
+
+<main id="main" class="main">
+    <h4 class="text-center">
+        @(Model.StateID == null ? "State Add Form" : "State Edit Form")
+    </h4>
+    <form class="row g-3" asp-action="StateSave" asp-controller="StateDB" method="post">
+        @Html.HiddenFor(x => x.StateID)
+
+
+        <div class="col-md-6">
+            <label class="form-label">State Name</label>
+            <input type="text" class="form-control" asp-for="StateName" placeholder="State Name">
+            <span asp-validation-for="StateName" class="text-danger"></span>
+        </div> @* --StateName *@
+
+        <div class="col-md-6">
+            <label class="form-label">State Code</label>
+            <input type="text" class="form-control" asp-for="StateCode" placeholder="State Code">
+            <span asp-validation-for="StateCode" class="text-danger"></span>
+        </div> @* --StateCode *@
+
+        <div class="col-md-6">
+            <label class="form-label">Country ID</label>
+            <select class="form-control" asp-for="CountryID" asp-items="@(new SelectList(ViewBag.CountryList, "CountryID", "CountryName"))">
+                <option value="">Select Country</option>
+            </select>
+            <span asp-validation-for="CountryID" class="text-danger"></span>
+        </div> @* --CountryDropDown *@
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a asp-controller="State" asp-action="StateList">
+                <button type="button" class="btn btn-secondary">Cancel</button>
+            </a>
+        </div> @* --Submit/Cancel Button *@
+    </form>
+</main
+

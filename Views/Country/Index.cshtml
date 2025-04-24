@@ -1,0 +1,132 @@
+﻿<main>
+    <!-- Table to display countries -->
+    <h2>Country List</h2>
+    <table id="countriesTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Created Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Countries data will be appended here via JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Form for adding or editing a country -->
+    <h2>Country Form</h2>
+    <form id="countryForm">
+        <input type="hidden" id="countryId" />
+        <div class="form-group">
+            <label for="countryName">Country Name</label>
+            <input type="text" id="countryName" class="form-control" placeholder="Enter country name" required />
+        </div>
+        <div class="form-group">
+            <label for="countryCode">Country Code</label>
+            <input type="text" id="countryCode" class="form-control" placeholder="Enter country code" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Save Country</button>
+    </form>
+</main>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            loadCountries();
+        });
+
+                       function loadCountries() {
+            $.ajax({
+                url: 'https://localhost:7245/api/Country/all',
+                method: 'GET',
+                success: function (data) {
+                    console.log("Fetched countries:", data); // Log the response
+                    const tableBody = $('#countriesTable tbody');
+                    tableBody.empty();
+                    data.forEach(country => {
+                        tableBody.append(`
+                            <tr>
+                                <td>${country.countryID}</td>
+                                <td>${country.countryName}</td>
+                                <td>${country.countryCode}</td>
+                                <td>${new Date(country.createdDate).toLocaleDateString()}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm"
+                                        onclick="editCountry(${country.countryID}, ${JSON.stringify(country.countryName)},
+                                        ${JSON.stringify(country.countryCode)})">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-sm"
+                                        onclick="deleteCountry(${country.countryID})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                },
+                error: function (error) {
+                    console.error("Error loading countries:", error);
+                    alert("Failed to load countries. Please try again.");
+                }
+            });
+        }
+
+
+
+        function editCountry(id, name, code) {
+            $('#countryId').val(id);
+            $('#countryName').val(name);
+            $('#countryCode').val(code);
+        }
+
+        function deleteCountry(id) {
+            if (confirm("Are you sure you want to delete this country?")) {
+                $.ajax({
+                    url: `/Countries/Delete?id=${id}`,
+                    method: 'DELETE',
+                    success: function () {
+                        alert("Country deleted successfully!");
+                        loadCountries();
+                    },
+                    error: function (error) {
+                        console.error("Error deleting country:", error);
+                        alert("Failed to delete country. Please try again.");
+                    }
+                });
+            }
+        }
+
+        $('#countryForm').submit(function (e) {
+            e.preventDefault();
+            const id = $('#countryId').val();
+            const name = $('#countryName').val();
+            const code = $('#countryCode').val();
+            const url = id ? `/api/Country/${id}` : '/Country';
+            const method = id ? 'PUT' : 'POST';
+            const data = id
+                ? JSON.stringify({ countryID: id, countryName: name, countryCode: code })
+                : JSON.stringify({ countryName: name, countryCode: code });
+
+            $.ajax({
+                url: url,
+                method: method,
+                contentType: 'application/json',
+                data: data,
+                success: function (response) {
+                    alert(response.message);
+                    $('#countryForm')[0].reset();
+                    $('#countryId').val('');
+                    loadCountries();
+                },
+                error: function (xhr) {
+                    console.error("Error performing operation:", xhr.responseText);
+                    alert("Failed to save country. Please try again.");
+                }
+            });
+        });
+    </script>
+}

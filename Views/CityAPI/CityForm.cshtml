@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "CityForm"; Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model Product_Management_System.Models.CityModel
+
+
+
+<main id="main" class="main">
+    <h4 class="text-center">
+        @(Model.CityID == null ? "City Add Form" : "City Edit Form")
+    </h4>
+    <form class="row g-3" asp-action="CitySave" asp-controller="City" method="post">
+        @Html.HiddenFor(x => x.CityID)
+
+
+        <div class="col-md-6">
+            <label class="form-label">City Name</label>
+            <input type="text" class="form-control" asp-for="CityName" placeholder="City Name">
+            <span asp-validation-for="CityName" class="text-danger"></span>
+        </div> @* --CityName *@
+
+        <div class="col-md-6">
+            <label class="form-label">City Code</label>
+            <input type="text" class="form-control" asp-for="CityCode" placeholder="City Code">
+            <span asp-validation-for="CityCode" class="text-danger"></span>
+        </div> @* --CityCode *@
+
+        <div class="col-md-6">
+            <label class="form-label">Country ID</label>
+            <select class="form-control" asp-for="CountryID" asp-items="@(new SelectList(ViewBag.CountryList, "CountryID", "CountryName"))">
+                <option value="">Select Country</option>
+            </select>
+            <span asp-validation-for="CountryID" class="text-danger"></span>
+        </div> @* --CountryDropDown *@
+
+        <div class="col-md-6">
+            <label class="form-label">State ID</label>
+            <select class="form-control" asp-for="StateID" id="StateID">
+                <option value="">Select State</option>
+            </select>
+            <span asp-validation-for="StateID" class="text-danger"></span>
+        </div> @* --StateDropDown *@
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a asp-controller="City" asp-action="CityList">
+                <button type="button" class="btn btn-secondary">Cancel</button>
+            </a>
+        </div> @* --Submit/Cancel Button *@
+    </form>
+</main>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Function to load states based on country
+            function loadStatesByCountry(countryId, selectedStateId) {
+                if (countryId) {
+                    $.ajax({
+                        url: '@Url.Action("GetStatesByCountry", "City")',
+                        type: "POST",
+                        data: { CountryID: countryId },
+                        success: function (data) {
+                            $("#StateID")
+                                .empty()
+                                .append('<option value="">Select State</option>');
+
+                            $.each(data, function (i, state) {
+                                $("#StateID").append(
+                                    '<option value="' +
+                                    state.stateID +
+                                    '">' +
+                                    state.stateName +
+                                    "</option>"
+                                );
+                            });
+
+                            // Set the selected state if editing
+                            if (selectedStateId) {
+                                $("#StateID").val(selectedStateId);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        },
+                    });
+                } else {
+                    $("#StateID").empty().append('<option value="">Select State</option>');
+                }
+            }
+
+            // On country dropdown change, load states
+            $("#CountryID").change(function () {
+                var countryId = $(this).val();
+                loadStatesByCountry(countryId, null);
+            });
+
+            // Trigger the change event on page load if editing
+            var preSelectedCountry = $("#CountryID").val();
+            var preSelectedState = '@Model.StateID'; // Use Razor to pass StateID for edit
+            if (preSelectedCountry) {
+                loadStatesByCountry(preSelectedCountry, preSelectedState);
+            }
+        });
+    </script>
+}
+

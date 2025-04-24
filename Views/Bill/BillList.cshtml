@@ -1,0 +1,54 @@
+﻿@model DataTable
+@using System.Data
+@using ClosedXML.Excel;
+<main id="main" class="main">
+    <h4 class="text-center">Bill table</h4>
+    <div class="px-2 d-flex flex-column gap-2">
+        <a asp-controller="Bill" asp-action="DataToExcel">
+            <button type="button" class="btn btn-success btn-end"><i class="bi bi-file-earmark-excel"></i> Export to Excel</button>
+        </a>
+        <a asp-controller="Bill" asp-action="BillForm">
+            <button type="button" class="btn btn-primary btn-end"><i class="bi bi-plus-lg"></i> Add Data</button>
+        </a>
+    </div>
+    <span class="text-danger">@TempData["ErrorMessage"]</span>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">BillID </th>
+                <th scope="col">BillNo</th>
+                <th scope="col">BillDate</th>
+                <th scope="col">TotalAmount</th>
+                <th scope="col">Discount</th>
+                <th scope="col">NetAmount</th>
+                <th scope="col">UserName</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow bill in Model.Rows)
+            {
+                <tr>
+                    <td>@bill["BillID"]</td>
+                    <td>@bill["BillNumber"]</td>
+                    <td>@bill["BillDate"]</td>
+                    <td>@bill["TotalAmount"]</td>
+                    <td>@bill["Discount"]</td>
+                    <td>@bill["NetAmount"]</td>
+                    <td scope="col">@bill["UserName"]</td>
+                    <td style="display:flex; flex-direction:row; gap:.5rem">
+                        <a class="btn btn-outline-success btn-xs" asp-controller="Bill" asp-action="BillForm" asp-route-BillID="@bill["BillID"]">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <form method="post" asp-controller="Bill" asp-action="BillDelete">
+                            <input type="hidden" name="BillID" value="@bill["BillID"]" />
+                            <button type="submit" class="btn btn-outline-danger btn-xs" onclick="return confirm('Are you sure you want to delete this Bill?');">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</main>

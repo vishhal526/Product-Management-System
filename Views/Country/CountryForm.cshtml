@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "CountryForm"; Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model Product_Management_System.Models.CountryModel
+
+<main id="main" class="main">
+    <h4 class="text-center">
+        @(Model.CountryID == null ? "Country Add Form" : "Country Edit Form")
+    </h4>
+    <form class="row g-3" asp-action="CountrySave" asp-controller="CountryDB" method="post">
+        @Html.HiddenFor(x => x.CountryID)
+
+
+        <div class="col-md-6">
+            <label class="form-label">Country Name</label>
+            <input type="text" class="form-control" asp-for="CountryName" placeholder="Country Name">
+            <span asp-validation-for="CountryName" class="text-danger"></span>
+        </div> @* --CountryName *@
+
+        <div class="col-md-6">
+            <label class="form-label">Country Code</label>
+            <input type="text" class="form-control" asp-for="CountryCode" placeholder="Country Code">
+            <span asp-validation-for="CountryCode" class="text-danger"></span>
+        </div> @* --CountryCode *@
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a asp-controller="Country" asp-action="CountryList">
+                <button type="button" class="btn btn-secondary">Cancel</button>
+            </a>
+        </div> @* --Submit/Cancel Button *@
+    </form>
+</main
+

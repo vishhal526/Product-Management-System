@@ -1,0 +1,60 @@
+﻿@model Product_Management_System.Models.BillModel
+<main id="main" class="main">
+    <h4 class="text-center"> 
+        @(Model.BillID == null ? "Bill Form" : "Bill Edit Form")
+    </h4>
+    <form class="row g-3" method="post" asp-action="BillSave" asp-controller="Bill">
+        @Html.HiddenFor(x => x.BillID)
+        <div class="col-md-6">
+            <label class="form-label">Bill Number</label>
+            <input type="text" class="form-control" asp-for="BillNo" placeholder="Bill Number">
+            <span asp-validation-for="BillNo" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Bill Date</label>
+            <input type="date" class="form-control" asp-for="BillDate" placeholder="Bill Date">
+            <span asp-validation-for="BillDate" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">OrderDate</label>
+            <select class="form-control" asp-for="OrderID" asp-items="@(new SelectList(ViewBag.OrderList, "OrderID", "OrderDate"))">
+                <option value="">Select OrderDate</option>
+            </select>
+            <span asp-validation-for="OrderID" class="text-danger"></span>
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Total Amount</label>
+            <input type="number" class="form-control" asp-for="TotalAmount" placeholder="Total Amount">
+            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Discount</label>
+            <input type="number" class="form-control" asp-for="Discount" placeholder="Discount">
+            <span asp-validation-for="Discount" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Net Amount</label>
+            <input type="number" class="form-control" asp-for="NetAmount" placeholder="Net Amount">
+            <span asp-validation-for="NetAmount" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">User Name</label>
+            <select class="form-control" asp-for="UserID" asp-items="@(new SelectList(ViewBag.UserList, "UserID", "UserName"))">
+                <option value="">Select User</option>
+            </select>
+            <span asp-validation-for="UserID" class="text-danger"></span>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a asp-controller="Bill" asp-action="BillList">
+            <button type="button" class="btn btn-secondary">Cancel</button>
+            </a>
+        </div>
+    </form>
+</main>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

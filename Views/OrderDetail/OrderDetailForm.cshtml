@@ -1,0 +1,58 @@
+﻿@model Product_Management_System.Models.OrderDetailModel
+<main id="main" class="main">
+    <h4 class="text-center">
+        @(Model.OrderDetailID == null ? "Order Detail Form" : "Order Detail Edit Form")
+    </h4>
+    <form class="row g-3" method="post" asp-action="OrderDetailSave" asp-controller="OrderDetail">
+        @Html.HiddenFor(x => x.OrderDetailID)
+
+        <div class="col-md-6">
+            <label class="form-label">OrderID</label>
+            <select class="form-control" asp-for="OrderID" asp-items="@(new SelectList(ViewBag.OrderList, "OrderID","OrderID"))">
+                <option value="">Select OrderID</option>
+            </select>
+            <span asp-validation-for="OrderID" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">ProductName</label>
+            <select class="form-control" asp-for="ProductID" asp-items="@(new SelectList(ViewBag.ProductList, "ProductID", "ProductName"))">
+                <option value="">Select Product</option>
+            </select>
+            <span asp-validation-for="ProductID" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-control" asp-for="Quantity" placeholder="Quantity">
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Amount</label>
+            <input type="number" class="form-control" asp-for="Amount" placeholder="Amount">
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">TotalAmount</label>
+            <input type="number" class="form-control" asp-for="TotalAmount" placeholder="TotalAmount">
+            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+        </div>
+       
+        <div class="col-md-6">
+            <label class="form-label">UserName</label>
+            <select class="form-control" asp-for="UserID" asp-items="@(new SelectList(ViewBag.UserList, "UserID", "UserName"))">
+                <option value="">Select User</option>
+            </select>
+            <span asp-validation-for="UserID" class="text-danger"></span>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a asp-controller="OrderDetail" asp-action="OrderDetailList">
+                <button type="button" class="btn btn-secondary">Cancel</button>
+            </a>
+        </div>
+    </form>
+</main>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
